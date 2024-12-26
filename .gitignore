@@ -98,9 +98,5 @@ docker-compose.override.yml
 logs/
 *.log
 
-# Ignore Docker-related files
-docker-compose.yml
-docker/
-
 # ignore backups
 *~
