@@ -97,8 +97,8 @@ def generate_summary(self, transcript, settings):
         focus_text = ", ".join(focus_map[area] for area in settings['focus_areas']) or "balanced_overview"
         user_prompt = f"""Generate a {length_map[settings['length']]} summary in {settings['language']} language. Length is very important. Focus on: {focus_text}
                     Format the response as follows:
-                    1. Genre: [one-word genre] in {settings['language']} language.
-                    2. Emotion/tone: [one-word emotion] {settings['language']} language.
+                    1. Genre: [one-word genre] (in {settings['language']} language).
+                    2. Emotion/tone: [one-word emotion] (in {settings['language']} language).
                     3. Point-wise Summary: write in {settings['language']} language and [focused on {focus_text}] but in case of balanced_overview it should be a paragraph as in Summary:.... 
                     4. Key takeaway: [1-2 line essence of what should be learned] in {settings['language']} language.
                 Here is the transcript: {transcript} in English language."""

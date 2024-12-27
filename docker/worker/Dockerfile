@@ -14,13 +14,30 @@ RUN apt-get update && apt-get install -y wget gnupg \
         mongodb-database-tools \
     && rm -rf /var/lib/apt/lists/*
 
+# First copy just requirements to leverage Docker cache
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Create start-worker.sh directly in the container
+RUN echo '#!/bin/bash\n\
+# Wait for Redis\n\
+until redis-cli -h redis ping; do\n\
+    echo "Waiting for Redis..."\n\
+    sleep 1\n\
+done\n\
+\n\
+# Wait for MongoDB\n\
+until curl --silent mongodb:27017 > /dev/null; do\n\
+    echo "Waiting for MongoDB..."\n\
+    sleep 1\n\
+done\n\
+\n\
+# Start the Celery worker\n\
+exec celery -A worker.celery_app.celery worker -Q youtube_tasks -l INFO' > /usr/local/bin/start-worker.sh \
+    && chmod +x /usr/local/bin/start-worker.sh
+
+# Copy the application code
 COPY . .
 ENV PYTHONPATH=/app
 
-COPY docker/worker/start-worker.sh /start-worker.sh
-RUN chmod +x /start-worker.sh
-
-CMD ["/start-worker.sh"]
+CMD ["/usr/local/bin/start-worker.sh"]

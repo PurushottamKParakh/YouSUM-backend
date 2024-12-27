@@ -31,9 +31,9 @@ services:
       redis:
         condition: service_healthy
       mongodb:
-        condition: service_started  # Changed from service_healthy
-    volumes:
-      - .:/app
+        condition: service_started
+    #volumes:
+      #- .:/app
     networks:
       - app-network
     restart: unless-stopped
